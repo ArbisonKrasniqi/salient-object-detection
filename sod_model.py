@@ -6,14 +6,14 @@ class SODModel(nn.Module):
         super().__init__()
 
         #Encoder
-        self.enc1 = nn.Sequential(nn.Conv2d(3,32, kernel_size=3, padding=1), nn.ReLU(), nn.MaxPool2d(2,2))
-        self.enc2 = nn.Sequential(nn.Conv2d(32,64, kernel_size=3, padding=1), nn.ReLU(), nn.MaxPool2d(2,2))
-        self.enc3 = nn.Sequential(nn.Conv2d(64,128, kernel_size=3, padding=1), nn.ReLU(), nn.MaxPool2d(2,2))
-        self.enc4 = nn.Sequential(nn.Conv2d(128,256, kernel_size=3, padding=1), nn.ReLU(), nn.MaxPool2d(2,2))
+        self.enc1 = nn.Sequential(nn.Conv2d(3,32, kernel_size=3, padding=1), nn.BatchNorm2d(32), nn.ReLU(), nn.MaxPool2d(2,2))
+        self.enc2 = nn.Sequential(nn.Conv2d(32,64, kernel_size=3, padding=1), nn.BatchNorm2d(64), nn.ReLU(), nn.MaxPool2d(2,2))
+        self.enc3 = nn.Sequential(nn.Conv2d(64,128, kernel_size=3, padding=1), nn.BatchNorm2d(128), nn.ReLU(), nn.MaxPool2d(2,2))
+        self.enc4 = nn.Sequential(nn.Conv2d(128,256, kernel_size=3, padding=1), nn.BatchNorm2d(256), nn.ReLU(), nn.MaxPool2d(2,2))
         
-        self.dec1 = nn.Sequential(nn.ConvTranspose2d(256, 128, kernel_size=2, stride = 2), nn.ReLU())
-        self.dec2 = nn.Sequential(nn.ConvTranspose2d(128, 64, kernel_size=2, stride = 2), nn.ReLU())
-        self.dec3 = nn.Sequential(nn.ConvTranspose2d(64, 32, kernel_size=2, stride = 2), nn.ReLU())
+        self.dec1 = nn.Sequential(nn.ConvTranspose2d(256, 128, kernel_size=2, stride = 2), nn.BatchNorm2d(128),  nn.ReLU())
+        self.dec2 = nn.Sequential(nn.ConvTranspose2d(128, 64, kernel_size=2, stride = 2), nn.BatchNorm2d(64), nn.ReLU())
+        self.dec3 = nn.Sequential(nn.ConvTranspose2d(64, 32, kernel_size=2, stride = 2), nn.BatchNorm2d(32), nn.ReLU())
         self.dec4 = nn.Sequential(nn.ConvTranspose2d(32, 1, kernel_size=2, stride = 2), nn.Sigmoid())
 
     def forward(self, x):
