@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from data_loader import SODDataset, split_dataset, make_dataloaders
 from sod_model import SODModel
+from unet_sod_model import UNetSODModel
 
 def iou_loss(predictions, targets, smooth=1e-6):
     # I added smooth 1e-6 that is adde to top and bottom to avoid division by zero
@@ -20,10 +21,12 @@ LEARNING_RATE = 1e-3
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 dataset = SODDataset("data/images", "data/ground_truth_mask")
+
 train_set, val_set, test_set = split_dataset(dataset)
 train_loader, val_loader, test_loader = make_dataloaders(train_set, val_set, test_set)
 
-model = SODModel().to(DEVICE)
+#model = SODModel().to(DEVICE)
+model = UNetSODModel().to(DEVICE)
 optimizer = torch.optim.Adam(model.parameters(), lr = LEARNING_RATE)
 
 best_val_loss = float('inf')

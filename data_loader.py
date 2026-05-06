@@ -14,7 +14,7 @@ BATCH_SIZE = 32
 NUM_WORKERS = 4
 
 class SODDataset(Dataset):
-    def __init__(self, images_dir, masks_dir, image_size=IMAGE_SIZE):
+    def __init__(self, images_dir, masks_dir, image_size=IMAGE_SIZE, augment=False):
         self.images_dir = Path(images_dir)
         self.masks_dir = Path(masks_dir)
 
@@ -32,14 +32,20 @@ class SODDataset(Dataset):
         self.image_transform = T.Compose([
             T.Resize((image_size, image_size)),
             T.ToImage(),
-            T.ToDtype(torch.float32, scale = True)
+            T.ToDtype(torch.float32, scale=True)
         ])
 
         self.mask_transform = T.Compose([
             T.Resize((image_size, image_size)),
             T.ToImage(),
-            T.ToDtype(torch.float32, scale = True)
+            T.ToDtype(torch.float32, scale=True)
         ])
+
+        self.augment = augment
+        self.shared_aug = T.Compose([
+            T.RandomHorizontalFlip(p=0.5),
+            T.RandomRotation(degrees=10),
+        ]) if augment else None
         
     def __len__(self):
         return len(self.image_paths)
@@ -47,6 +53,13 @@ class SODDataset(Dataset):
     def __getitem__(self, idx):
         image = Image.open(self.image_paths[idx]).convert("RGB")
         mask = Image.open(self.mask_paths[idx]).convert("L")
+
+        if self.augment:
+            seed = torch.randint(0, 1000000, (1,)).item()
+            torch.manual_seed(seed)
+            image = self.shared_aug(image)
+            torch.manual_seed(seed)
+            mask = self.shared_aug(mask)
 
         image_tensor = self.image_transform(image)
         mask_tensor = self.mask_transform(mask)

@@ -2,6 +2,8 @@ import torch
 import matplotlib.pyplot as plt
 from data_loader import SODDataset, split_dataset, make_dataloaders
 from sod_model import SODModel
+from unet_sod_model import UNetSODModel
+import random
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -9,7 +11,8 @@ dataset = SODDataset("data/images", "data/ground_truth_mask")
 train_set, val_set, test_set = split_dataset(dataset)
 train_loader, val_loader, test_loader = make_dataloaders(train_set, val_set, test_set)
 
-model = SODModel().to(DEVICE)
+#model = SODModel().to(DEVICE)
+model = UNetSODModel().to(DEVICE)
 model.load_state_dict(torch.load("checkpoints/best_model.pth", map_location=DEVICE))
 model.eval()
 
@@ -53,7 +56,8 @@ print(f"Precision: {total_precision / num_batches:.4f}")
 print(f"Recall:    {total_recall / num_batches:.4f}")
 print(f"F1:        {total_f1 / num_batches:.4f}")
 
-images, masks = next(iter(test_loader))
+batches = list(test_loader)
+images, masks = random.choice(batches)
 images = images.to(DEVICE)
 masks = masks.to(DEVICE)
 
