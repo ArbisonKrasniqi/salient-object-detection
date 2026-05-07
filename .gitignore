@@ -220,6 +220,7 @@ __marimo__/
 .vscode
 
 data/
+data_msra/
 checkpoints/
 *.pth
 *.pt

@@ -7,7 +7,7 @@ import random
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-dataset = SODDataset("data/images", "data/ground_truth_mask")
+dataset = SODDataset("data_msra/images", "data_msra/ground_truth_mask")
 train_set, val_set, test_set = split_dataset(dataset)
 train_loader, val_loader, test_loader = make_dataloaders(train_set, val_set, test_set)
 
