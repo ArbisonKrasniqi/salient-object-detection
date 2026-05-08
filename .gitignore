@@ -221,7 +221,5 @@ __marimo__/
 
 data/
 data_msra/
-checkpoints/
-*.pth
 *.pt
 .gradio
