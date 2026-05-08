@@ -224,3 +224,4 @@ data_msra/
 checkpoints/
 *.pth
 *.pt
+.gradio
